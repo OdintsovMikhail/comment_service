@@ -131,6 +131,7 @@ app = FastAPI(
 
 @app.get("/comment/meeting/{meeting_id}", response_model=List[CommentOut])
 def get_meeting_comments(meeting_id: int):
+    logger.info("Searching for meeting with id %s", meeting_id)
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT Id FROM dbo.Meeting WHERE Id = ?", meeting_id)
@@ -146,11 +147,14 @@ def get_meeting_comments(meeting_id: int):
             meeting_id,
         )
         rows = cursor.fetchall()
+
+    logger.info("Meeting with id %s found", meeting_id)
     return [CommentOut(id=r[0], user_id=r[1], text=r[2]) for r in rows]
 
 
 @app.get("/comment/book/{book_id}", response_model=List[CommentOut])
 def get_book_comments(book_id: int):
+    logger.info("Searching for book with id %s", book_id)
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT Id FROM dbo.book WHERE Id = ?", book_id)
@@ -166,4 +170,6 @@ def get_book_comments(book_id: int):
             book_id,
         )
         rows = cursor.fetchall()
+
+    logger.info("Book with id %s found", book_id)
     return [CommentOut(id=r[0], user_id=r[1], text=r[2]) for r in rows]
