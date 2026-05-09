@@ -72,12 +72,12 @@ class TestHandleBookComment:
 
         # First execute → INSERT into Comment
         first_call_args = cursor.execute.call_args_list[0]
-        assert "INSERT INTO dbo.Comment" in first_call_args[0][0]
+        assert "INSERT INTO [dbo].Comment" in first_call_args[0][0]
         assert first_call_args[0][1:] == (1, "Great book!")
 
         # Second execute → INSERT into BookComment with the returned id
         second_call_args = cursor.execute.call_args_list[1]
-        assert "INSERT INTO dbo.BookComment" in second_call_args[0][0]
+        assert "INSERT INTO [dbo].BookComment" in second_call_args[0][0]
         assert second_call_args[0][1:] == (42, 7)
 
         conn.commit.assert_called_once()
@@ -115,11 +115,11 @@ class TestHandleMeetingComment:
             _handle_meeting_comment({"user_id": 5, "text": "Good session", "meeting_id": 10})
 
         first_call_args = cursor.execute.call_args_list[0]
-        assert "INSERT INTO dbo.Comment" in first_call_args[0][0]
+        assert "INSERT INTO [dbo].Comment" in first_call_args[0][0]
         assert first_call_args[0][1:] == (5, "Good session")
 
         second_call_args = cursor.execute.call_args_list[1]
-        assert "INSERT INTO dbo.MeetingComment" in second_call_args[0][0]
+        assert "INSERT INTO [dbo].MeetingComment" in second_call_args[0][0]
         assert second_call_args[0][1:] == (99, 10)
 
         conn.commit.assert_called_once()
